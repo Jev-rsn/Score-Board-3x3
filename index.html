@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Basket 3x3 Scoreboard & Shot Clock</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="app-container">
+
+    <!-- TOP HEADER WITH ICONS & TOOLS -->
+    <header class="top-nav">
+      <!-- CENTER ICONS (Settings & Timer, just like reference photo) -->
+      <button class="icon-btn" id="btnSettingsIcon" title="Pengaturan Pertandingan">
+        <svg viewBox="0 0 24 24">
+          <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+        </svg>
+      </button>
+
+      <button class="icon-btn" id="btnTimerIcon" title="Kontrol Cepat Waktu & Shot Clock">
+        <svg viewBox="0 0 24 24">
+          <path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+        </svg>
+      </button>
+
+      <!-- FLOATING QUICK UTILITIES -->
+      <div class="floating-tools">
+        <button class="mini-tool-btn" id="btnHistory" title="Histori & Riwayat Pertandingan">
+          📋 Histori
+        </button>
+        <button class="mini-tool-btn" id="btnPopout" title="Buka layar kedua untuk TV / Proyektor Penonton">
+          🖥️ TV Penonton
+        </button>
+        <button class="mini-tool-btn" id="btnHornManual" title="Bunyikan Horn Arena [B]">
+          🚨 Horn
+        </button>
+        <button class="mini-tool-btn" id="btnUndoMini" title="Batalkan Aksi Terakhir [Ctrl+Z]">
+          ↩️ Undo
+        </button>
+        <button class="mini-tool-btn" id="btnFullscreenMini" title="Layar Penuh">
+          ⛶
+        </button>
+      </div>
+    </header>
+
+    <!-- SCOREBOARD 3-COLUMN LAYOUT -->
+    <main class="scoreboard-board">
+
+      <!-- LEFT SIDE: TEAM 1 -->
+      <section class="team-container team-1-side">
+        <!-- Action buttons vertical strip (outside) -->
+        <div class="action-strip">
+          <div class="action-cluster-top">
+            <button class="action-btn" id="btnA_Plus2" title="Tambah 2 Poin [2]">+2</button>
+            <button class="action-btn" id="btnA_Plus1" title="Tambah 1 Poin [1]">+1</button>
+            <button class="action-btn" id="btnA_Minus1" title="Kurang 1 Poin [Q]">-</button>
+          </div>
+          <div class="action-cluster-bottom">
+            <button class="action-btn" id="btnA_FoulPlus" title="Tambah 1 Foul [W]">+</button>
+            <button class="action-btn" id="btnA_FoulMinus" title="Kurang 1 Foul">-</button>
+          </div>
+        </div>
+
+        <!-- Center content: Name, Score Box, Fouls Label, Fouls Box -->
+        <div class="team-center-content">
+          <div class="team-name-title" id="teamAName" title="Klik untuk ubah nama tim">TEAM1</div>
+
+          <!-- Score Card Box (Click to +1) -->
+          <div class="score-box-card" id="teamAScoreBox" title="Klik untuk +1 Poin">
+            <span class="score-number-text" id="teamAScore">18</span>
+          </div>
+
+          <div class="fouls-section-label">FOULS</div>
+
+          <!-- Fouls Card Box (Click to +1) -->
+          <div class="fouls-box-card" id="teamAFoulBox" title="Klik untuk +1 Foul">
+            <span class="fouls-number-text" id="teamAFoulNum">4</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER: GAME CLOCK & SHOT CLOCK -->
+      <section class="clocks-column">
+        <!-- Game Clock (Yellow) - Click to Start/Pause -->
+        <div class="clock-unit-game" id="gameClockBox" title="Klik untuk Mulai / Jeda Waktu [SPACE]">
+          <span class="game-clock-val" id="gameClockDigits">2:06</span>
+        </div>
+
+        <!-- Shot Clock (Red) - Click to Reset to 12s -->
+        <div class="clock-unit-shot" id="shotClockBox" title="Klik untuk Reset 12 Detik [F]">
+          <span class="shot-clock-val" id="shotClockDigits">4.7</span>
+        </div>
+      </section>
+
+      <!-- RIGHT SIDE: TEAM 2 -->
+      <section class="team-container team-2-side">
+        <!-- Center content: Name, Score Box, Fouls Label, Fouls Box -->
+        <div class="team-center-content">
+          <div class="team-name-title" id="teamBName" title="Klik untuk ubah nama tim">TEAM2</div>
+
+          <!-- Score Card Box (Click to +1) -->
+          <div class="score-box-card" id="teamBScoreBox" title="Klik untuk +1 Poin">
+            <span class="score-number-text" id="teamBScore">16</span>
+          </div>
+
+          <div class="fouls-section-label">FOULS</div>
+
+          <!-- Fouls Card Box (Click to +1) -->
+          <div class="fouls-box-card" id="teamBFoulBox" title="Klik untuk +1 Foul">
+            <span class="fouls-number-text" id="teamBFoulNum">3</span>
+          </div>
+        </div>
+
+        <!-- Action buttons vertical strip (outside) -->
+        <div class="action-strip">
+          <div class="action-cluster-top">
+            <button class="action-btn" id="btnB_Plus2" title="Tambah 2 Poin [9]">+2</button>
+            <button class="action-btn" id="btnB_Plus1" title="Tambah 1 Poin [8]">+1</button>
+            <button class="action-btn" id="btnB_Minus1" title="Kurang 1 Poin [I]">-</button>
+          </div>
+          <div class="action-cluster-bottom">
+            <button class="action-btn" id="btnB_FoulPlus" title="Tambah 1 Foul [O]">+</button>
+            <button class="action-btn" id="btnB_FoulMinus" title="Kurang 1 Foul">-</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM HOME BAR INDICATOR -->
+    <footer class="bottom-home-bar">
+      <div class="home-indicator-pill"></div>
+    </footer>
+
+  </div>
+
+  <!-- ================= POPUP MODALS ================= -->
+
+  <!-- 1. SETTINGS MODAL (⚙️) -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>⚙️ Pengaturan Pertandingan 3x3</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Nama Tim 1 (Kiri)</label>
+            <input type="text" class="form-control" id="inputTeamAName" value="TEAM1">
+          </div>
+          <div class="form-group">
+            <label>Nama Tim 2 (Kanan)</label>
+            <input type="text" class="form-control" id="inputTeamBName" value="TEAM2">
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Durasi Game (Menit)</label>
+            <input type="number" class="form-control" id="inputGameDuration" min="1" max="60" value="10">
+          </div>
+          <div class="form-group">
+            <label>Durasi Shot Clock (Detik)</label>
+            <input type="number" class="form-control" id="inputShotClockDuration" min="5" max="35" value="12">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="inputTargetScoreEnabled" checked>
+            <span>Aturan Target 21 Poin (First to 21 Wins)</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="inputSoundEnabled" checked>
+            <span>Efek Suara Arena & Buzzer Horn Aktif</span>
+          </label>
+        </div>
+
+        <div class="form-row-2">
+          <button class="btn-secondary" id="btnShowShortcutsModal">⌨️ Panduan Hotkey</button>
+          <button class="btn-danger" id="btnResetMatchSettings">🛑 Reset Pertandingan</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="document.getElementById('settingsModal').classList.remove('active')">Tutup</button>
+        <button class="btn-primary" id="btnSaveSettings">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. QUICK TIMER & SHOT CLOCK MODAL (⏱) -->
+  <div class="modal-backdrop" id="timerModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>⏱️ Kontrol Cepat Timer & Shot Clock</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="timer-action-grid">
+          <button class="timer-quick-btn" id="btnToggleClockModal">
+            <span id="btnModalClockLabel">▶ Mulai Waktu</span>
+            <small style="color: #94a3b8;">[SPACE]</small>
+          </button>
+          <button class="timer-quick-btn shot-action" id="btnResetShot12Modal">
+            <span>🔄 Reset 12s</span>
+            <small style="color: #fca5a5;">Shot Clock [F]</small>
+          </button>
+          <button class="timer-quick-btn" id="btnResetClock10m">
+            <span>🔄 Reset 10:00</span>
+            <small style="color: #94a3b8;">Waktu Awal</small>
+          </button>
+          <button class="timer-quick-btn shot-action" id="btnResetShot14Modal">
+            <span>🔄 Reset 14s</span>
+            <small style="color: #fca5a5;">Offensive Rebound [D]</small>
+          </button>
+          <button class="timer-quick-btn" id="btnPlus1mModal">+1 Menit</button>
+          <button class="timer-quick-btn" id="btnMinus1mModal">-1 Menit</button>
+          <button class="timer-quick-btn" id="btnPlus1sModal">+1 Detik</button>
+          <button class="timer-quick-btn" id="btnMinus1sModal">-1 Detik</button>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <button class="timer-quick-btn" id="btnStartOvertimeModal" style="flex: 1; background: #92400e; border-color: #f59e0b;">
+            ⚡ Babak Overtime (Selisih 2 Poin)
+          </button>
+          <button class="timer-quick-btn" id="btnToggleShotBlankModal" style="flex: 1;">
+            🕶 Sembunyikan Shot Clock
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="document.getElementById('timerModal').classList.remove('active')">Selesai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. KEYBOARD SHORTCUTS MODAL -->
+  <div class="modal-backdrop" id="shortcutsModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>⌨️ Tombol Cepat Keyboard (Hotkeys)</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="shortcut-tbl">
+          <tbody>
+            <tr>
+              <td><kbd>SPACE</kbd></td>
+              <td>Mulai / Jeda Waktu & Shot Clock</td>
+            </tr>
+            <tr>
+              <td><kbd>F</kbd> atau <kbd>S</kbd></td>
+              <td><strong>Reset Shot Clock ke 12 Detik</strong></td>
+            </tr>
+            <tr>
+              <td><kbd>D</kbd></td>
+              <td>Reset Shot Clock ke 14 Detik</td>
+            </tr>
+            <tr>
+              <td><kbd>1</kbd> / <kbd>2</kbd></td>
+              <td>Team 1: Tambah +1 Poin / +2 Poin</td>
+            </tr>
+            <tr>
+              <td><kbd>Q</kbd> / <kbd>W</kbd></td>
+              <td>Team 1: Kurang -1 Poin / Tambah +1 Foul</td>
+            </tr>
+            <tr>
+              <td><kbd>8</kbd> / <kbd>9</kbd></td>
+              <td>Team 2: Tambah +1 Poin / Tambah +2 Poin</td>
+            </tr>
+            <tr>
+              <td><kbd>I</kbd> / <kbd>O</kbd></td>
+              <td>Team 2: Kurang -1 Poin / Tambah +1 Foul</td>
+            </tr>
+            <tr>
+              <td><kbd>B</kbd> atau <kbd>H</kbd></td>
+              <td>Bunyikan Sirine / Horn Arena</td>
+            </tr>
+            <tr>
+              <td><kbd>J</kbd></td>
+              <td>Bunyikan Peluit Wasit</td>
+            </tr>
+            <tr>
+              <td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td>
+              <td>Batalkan (Undo) aksi skor/foul terakhir</td>
+            </tr>
+            <tr>
+              <td><kbd>ESC</kbd></td>
+              <td>Tutup popup</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="document.getElementById('shortcutsModal').classList.remove('active')">Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. WINNER CELEBRATION MODAL -->
+  <div class="modal-backdrop" id="winnerModal">
+    <div class="modal-box" style="border-color: #f59e0b; box-shadow: 0 0 50px rgba(245, 158, 11, 0.4);">
+      <div class="winner-banner-box">
+        <div class="trophy-emoji">🏆</div>
+        <h2 class="winner-headline" id="winnerTeamName">TEAM1 JUARA!</h2>
+        <p class="winner-subtext" id="winnerReasonText">Mencapai 21 poin lebih dulu sesuai regulasi FIBA 3x3!</p>
+
+        <div class="final-scores-display">
+          <span id="winnerScoreA" style="color: #fff;">21</span>
+          <span style="color: #64748b; margin: 0 10px;">-</span>
+          <span id="winnerScoreB" style="color: #fff;">18</span>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button class="btn-secondary" id="btnWinnerOvertime">⚡ Overtime</button>
+          <button class="btn-primary" id="btnWinnerReset">🔄 Pertandingan Baru</button>
+          <button class="btn-secondary" onclick="document.getElementById('winnerModal').classList.remove('active')">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MATCH HISTORY & ARCHIVE MODAL -->
+  <div class="modal-backdrop" id="historyModal">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>📋 Histori & Riwayat Pertandingan</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- TABS -->
+        <div class="history-tabs-nav">
+          <button class="history-tab-btn active" id="tabBtnTimeline">📜 Riwayat Langsung</button>
+          <button class="history-tab-btn" id="tabBtnArchive">🏆 Rekap Pertandingan Selesai (<span id="savedMatchesCount">0</span>)</button>
+        </div>
+
+        <!-- TAB 1: LIVE TIMELINE -->
+        <div class="history-tab-pane active" id="paneTimeline">
+          <div class="timeline-list" id="timelineListContainer">
+            <!-- Dynamically populated -->
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 12px; gap: 8px;">
+            <button class="btn-primary" id="btnSaveCurrentMatchManual" style="font-size: 0.85rem;">
+              💾 Simpan Hasil Pertandingan Ini
+            </button>
+            <button class="btn-danger" id="btnClearLiveTimeline" style="font-size: 0.85rem;">
+              🗑️ Bersihkan Catatan
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 2: SAVED MATCHES ARCHIVE -->
+        <div class="history-tab-pane" id="paneArchive">
+          <div class="matches-archive-container" id="matchesArchiveList">
+            <!-- Dynamically populated saved match cards -->
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 12px; gap: 8px;">
+            <button class="btn-secondary" id="btnExportAllArchive" style="font-size: 0.85rem;">
+              📥 Salin Semua Rekap (WhatsApp)
+            </button>
+            <button class="btn-danger" id="btnClearAllArchive" style="font-size: 0.85rem;">
+              🗑️ Hapus Semua Arsip
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="document.getElementById('historyModal').classList.remove('active')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-notice" id="toastNotice">Ringkasan berhasil disalin!</div>
+
+  <!-- SCRIPTS -->
+  <script src="js/audio.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

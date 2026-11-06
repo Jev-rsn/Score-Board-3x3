@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIBA 3x3 Arena - Layar Penonton</title>
+  <link rel="stylesheet" href="css/display.css">
+</head>
+<body>
+  <div class="spectator-container">
+    <!-- TOP HEADER -->
+    <header class="spectator-header">
+      <div class="fiba-brand">
+        <span class="brand-badge">3x3</span>
+        <span class="tournament-label" id="spectatorTournamentTitle">TURNAMEN BASKET 3x3</span>
+      </div>
+      <div class="court-label" id="spectatorCourtTitle">LAPANGAN 1</div>
+    </header>
+
+    <!-- MAIN SCOREBOARD ARENA -->
+    <main class="spectator-arena">
+      <!-- TEAM A CARD -->
+      <section class="team-card team-a" id="spectatorTeamACard">
+        <div class="team-top">
+          <h2 class="team-name" id="spectatorTeamAName">TIM A</h2>
+          <div class="possession-light" id="spectatorPossA">
+            <span>BALL</span> &bull;
+          </div>
+        </div>
+
+        <div class="target-21-badge" id="spectatorTargetA">TARGET 21 POINT!</div>
+
+        <div class="score-box">
+          <div class="score-digits" id="spectatorScoreA">0</div>
+        </div>
+
+        <div class="team-bottom-stats">
+          <div class="stat-item">
+            <span class="stat-label">FOULS</span>
+            <div class="foul-number" id="spectatorFoulNumA">0</div>
+            <div class="foul-pills" id="spectatorFoulPillsA">
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+            </div>
+            <span class="penalty-tag" id="spectatorPenaltyA">PENALTY</span>
+          </div>
+
+          <div class="stat-item timeout-indicator">
+            <span class="stat-label">T.O</span>
+            <div class="timeout-light available" id="spectatorToA"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER CLOCKS COLUMN -->
+      <section class="center-clocks">
+        <!-- GAME CLOCK -->
+        <div class="game-clock-panel">
+          <div class="period-title" id="spectatorPeriodLabel">WAKTU PERTANDINGAN</div>
+          <div class="game-digits" id="spectatorGameClock">10:00</div>
+        </div>
+
+        <!-- SHOT CLOCK ("SHOOT LOCK") -->
+        <div class="shot-clock-panel" id="spectatorShotClockCard">
+          <div class="shot-title">SHOT CLOCK</div>
+          <div class="shot-digits normal" id="spectatorShotClock">12</div>
+        </div>
+      </section>
+
+      <!-- TEAM B CARD -->
+      <section class="team-card team-b" id="spectatorTeamBCard">
+        <div class="team-top">
+          <div class="possession-light" id="spectatorPossB">
+            &bull; <span>BALL</span>
+          </div>
+          <h2 class="team-name" id="spectatorTeamBName">TIM B</h2>
+        </div>
+
+        <div class="target-21-badge" id="spectatorTargetB">TARGET 21 POINT!</div>
+
+        <div class="score-box">
+          <div class="score-digits" id="spectatorScoreB">0</div>
+        </div>
+
+        <div class="team-bottom-stats">
+          <div class="stat-item timeout-indicator">
+            <span class="stat-label">T.O</span>
+            <div class="timeout-light available" id="spectatorToB"></div>
+          </div>
+
+          <div class="stat-item">
+            <span class="penalty-tag" id="spectatorPenaltyB">PENALTY</span>
+            <div class="foul-pills" id="spectatorFoulPillsB">
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+              <span class="foul-pill"></span>
+            </div>
+            <div class="foul-number" id="spectatorFoulNumB">0</div>
+            <span class="stat-label">FOULS</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- TIMEOUT POPUP BANNER -->
+    <div class="spectator-timeout-banner" id="spectatorTimeoutBanner">
+      <div class="timeout-msg" id="spectatorTimeoutMsg">TIMEOUT - TIM A</div>
+      <div class="timeout-countdown" id="spectatorTimeoutDigits">30</div>
+    </div>
+
+    <!-- WINNER OVERLAY -->
+    <div class="spectator-winner-overlay" id="spectatorWinnerOverlay">
+      <div class="win-trophy">🏆</div>
+      <h1 class="win-team-name" id="spectatorWinTeam">TIM A JUARA!</h1>
+      <p class="win-subtitle" id="spectatorWinReason">Mencapai 21 Poin Lebih Dulu</p>
+      <div class="win-final-board">
+        <span id="winFinalA" style="color: #f87171;">21</span>
+        <span style="color: #64748b;">-</span>
+        <span id="winFinalB" style="color: #60a5fa;">18</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/audio.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/timer.js"></script>
+  <script>
+    // Spectator Display Renderer
+    const el = {
+      tournament: document.getElementById('spectatorTournamentTitle'),
+      court: document.getElementById('spectatorCourtTitle'),
+      teamACard: document.getElementById('spectatorTeamACard'),
+      teamBCard: document.getElementById('spectatorTeamBCard'),
+      nameA: document.getElementById('spectatorTeamAName'),
+      nameB: document.getElementById('spectatorTeamBName'),
+      scoreA: document.getElementById('spectatorScoreA'),
+      scoreB: document.getElementById('spectatorScoreB'),
+      foulNumA: document.getElementById('spectatorFoulNumA'),
+      foulNumB: document.getElementById('spectatorFoulNumB'),
+      foulPillsA: document.querySelectorAll('#spectatorFoulPillsA .foul-pill'),
+      foulPillsB: document.querySelectorAll('#spectatorFoulPillsB .foul-pill'),
+      penaltyA: document.getElementById('spectatorPenaltyA'),
+      penaltyB: document.getElementById('spectatorPenaltyB'),
+      toA: document.getElementById('spectatorToA'),
+      toB: document.getElementById('spectatorToB'),
+      possA: document.getElementById('spectatorPossA'),
+      possB: document.getElementById('spectatorPossB'),
+      targetA: document.getElementById('spectatorTargetA'),
+      targetB: document.getElementById('spectatorTargetB'),
+      periodLabel: document.getElementById('spectatorPeriodLabel'),
+      gameClock: document.getElementById('spectatorGameClock'),
+      shotClockCard: document.getElementById('spectatorShotClockCard'),
+      shotClock: document.getElementById('spectatorShotClock'),
+      timeoutBanner: document.getElementById('spectatorTimeoutBanner'),
+      timeoutMsg: document.getElementById('spectatorTimeoutMsg'),
+      timeoutDigits: document.getElementById('spectatorTimeoutDigits'),
+      winnerOverlay: document.getElementById('spectatorWinnerOverlay'),
+      winTeam: document.getElementById('spectatorWinTeam'),
+      winReason: document.getElementById('spectatorWinReason'),
+      winFinalA: document.getElementById('winFinalA'),
+      winFinalB: document.getElementById('winFinalB')
+    };
+
+    function renderSpectator(state) {
+      if (!state) return;
+
+      // Header
+      el.tournament.textContent = `${state.matchInfo.title} • ${state.matchInfo.subTitle}`;
+      el.court.textContent = state.matchInfo.court;
+
+      // Team Names & Colors
+      el.nameA.textContent = state.teamA.name;
+      el.nameB.textContent = state.teamB.name;
+      el.teamACard.style.borderLeftColor = state.teamA.color;
+      el.teamBCard.style.borderRightColor = state.teamB.color;
+
+      // Scores
+      el.scoreA.textContent = state.teamA.score;
+      el.scoreB.textContent = state.teamB.score;
+
+      // Target 21 badges
+      if (state.config.targetScoreEnabled && state.teamA.score >= state.config.targetScore - 2 && state.teamA.score < state.config.targetScore) {
+        el.targetA.classList.add('visible');
+        el.targetA.textContent = `TARGET 21! (BUTUH ${state.config.targetScore - state.teamA.score})`;
+      } else {
+        el.targetA.classList.remove('visible');
+      }
+
+      if (state.config.targetScoreEnabled && state.teamB.score >= state.config.targetScore - 2 && state.teamB.score < state.config.targetScore) {
+        el.targetB.classList.add('visible');
+        el.targetB.textContent = `TARGET 21! (BUTUH ${state.config.targetScore - state.teamB.score})`;
+      } else {
+        el.targetB.classList.remove('visible');
+      }
+
+      // Fouls Team A
+      el.foulNumA.textContent = state.teamA.fouls;
+      el.foulPillsA.forEach((pill, idx) => {
+        pill.className = 'foul-pill';
+        if (idx < state.teamA.fouls) {
+          pill.classList.add('active');
+          if (idx >= 6) pill.classList.add('penalty');
+        }
+      });
+      if (state.teamA.fouls >= state.config.teamFoulDoubleBonus) {
+        el.penaltyA.textContent = '2 FT + BOLA';
+        el.penaltyA.className = 'penalty-tag double-bonus';
+      } else if (state.teamA.fouls >= state.config.teamFoulBonusThreshold) {
+        el.penaltyA.textContent = 'PENALTI 2 FT';
+        el.penaltyA.className = 'penalty-tag bonus';
+      } else {
+        el.penaltyA.className = 'penalty-tag';
+      }
+
+      // Fouls Team B
+      el.foulNumB.textContent = state.teamB.fouls;
+      el.foulPillsB.forEach((pill, idx) => {
+        pill.className = 'foul-pill';
+        if (idx < state.teamB.fouls) {
+          pill.classList.add('active');
+          if (idx >= 6) pill.classList.add('penalty');
+        }
+      });
+      if (state.teamB.fouls >= state.config.teamFoulDoubleBonus) {
+        el.penaltyB.textContent = '2 FT + BOLA';
+        el.penaltyB.className = 'penalty-tag double-bonus';
+      } else if (state.teamB.fouls >= state.config.teamFoulBonusThreshold) {
+        el.penaltyB.textContent = 'PENALTI 2 FT';
+        el.penaltyB.className = 'penalty-tag bonus';
+      } else {
+        el.penaltyB.className = 'penalty-tag';
+      }
+
+      // Timeouts
+      if (state.teamA.timeouts > 0) el.toA.classList.add('available');
+      else el.toA.classList.remove('available');
+
+      if (state.teamB.timeouts > 0) el.toB.classList.add('available');
+      else el.toB.classList.remove('available');
+
+      // Possession
+      if (state.possession === 'A') {
+        el.possA.classList.add('active');
+        el.possB.classList.remove('active');
+      } else if (state.possession === 'B') {
+        el.possB.classList.add('active');
+        el.possA.classList.remove('active');
+      } else {
+        el.possA.classList.remove('active');
+        el.possB.classList.remove('active');
+      }
+
+      // Clocks
+      if (state.gameClock.isOvertime) {
+        el.periodLabel.textContent = 'OVERTIME (SELISIH 2 POIN)';
+        el.gameClock.textContent = 'OT';
+      } else {
+        el.periodLabel.textContent = 'WAKTU PERTANDINGAN';
+        const ms = state.gameClock.remainingMs;
+        const totalSec = Math.ceil(ms / 1000);
+        const mins = Math.floor(totalSec / 60);
+        const secs = totalSec % 60;
+        
+        // Show tenths in last 10 seconds
+        if (ms < 10000 && ms > 0) {
+          const tenths = Math.floor((ms % 1000) / 100);
+          el.gameClock.textContent = `0:${secs < 10 ? '0' : ''}${secs}.${tenths}`;
+        } else {
+          el.gameClock.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+      }
+
+      // Shot Clock
+      if (!state.shotClock.visible) {
+        el.shotClock.textContent = '--';
+        el.shotClock.className = 'shot-digits';
+        el.shotClockCard.className = 'shot-clock-panel';
+      } else {
+        const shotMs = state.shotClock.remainingMs;
+        const shotSec = Math.ceil(shotMs / 1000);
+
+        if (shotMs <= 5000 && shotMs > 0) {
+          const tenths = Math.floor((shotMs % 1000) / 100);
+          el.shotClock.textContent = `${Math.floor(shotMs / 1000)}.${tenths}`;
+        } else {
+          el.shotClock.textContent = `${shotSec}`;
+        }
+
+        // Color coding
+        if (shotSec <= 2 || shotMs <= 0) {
+          el.shotClock.className = 'shot-digits critical';
+          el.shotClockCard.className = 'shot-clock-panel critical';
+        } else if (shotSec <= 5) {
+          el.shotClock.className = 'shot-digits warning';
+          el.shotClockCard.className = 'shot-clock-panel warning';
+        } else {
+          el.shotClock.className = 'shot-digits normal';
+          el.shotClockCard.className = 'shot-clock-panel';
+        }
+      }
+
+      // Timeout Banner
+      if (state.timeout.active) {
+        el.timeoutBanner.classList.add('active');
+        const callingTeamName = state.timeout.callingTeam ? state[state.timeout.callingTeam].name : 'TIM';
+        el.timeoutMsg.textContent = `TIMEOUT - ${callingTeamName}`;
+        el.timeoutDigits.textContent = Math.ceil(state.timeout.remainingMs / 1000);
+      } else {
+        el.timeoutBanner.classList.remove('active');
+      }
+
+      // Winner Overlay
+      if (state.winner && state.winner !== 'tie') {
+        el.winnerOverlay.classList.add('active');
+        el.winTeam.textContent = `${state[state.winner].name} JUARA!`;
+        el.winReason.textContent = state.winnerReason || 'Pemenang Pertandingan';
+        el.winFinalA.textContent = state.teamA.score;
+        el.winFinalB.textContent = state.teamB.score;
+      } else {
+        el.winnerOverlay.classList.remove('active');
+      }
+    }
+
+    // Subscribe to state updates
+    window.scoreboardState.subscribe((state) => {
+      renderSpectator(state);
+    });
+
+    // Initial render
+    renderSpectator(window.scoreboardState.state);
+
+    // Double-click to toggle fullscreen
+    document.addEventListener('dblclick', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>
