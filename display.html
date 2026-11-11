@@ -306,8 +306,9 @@
 
           // Show tenths in last 10 seconds
           if (ms < 10000 && ms > 0) {
+            const wholeSec = Math.floor(ms / 1000);
             const tenths = Math.floor((ms % 1000) / 100);
-            el.gameClock.textContent = `0:${secs < 10 ? "0" : ""}${secs}.${tenths}`;
+            el.gameClock.textContent = `0:${wholeSec < 10 ? "0" : ""}${wholeSec}.${tenths}`;
           } else {
             el.gameClock.textContent = `${mins}:${secs < 10 ? "0" : ""}${secs}`;
           }

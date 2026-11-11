@@ -12,11 +12,21 @@ class ScoreboardTimer {
 
     // Warning sound triggers for shot clock countdown
     this.lastShotClockSecondAnnounced = null;
+    this.lastGameClockSecondAnnounced = null;
 
     this.startLoop();
   }
 
   startLoop() {
+    // If running in spectator display mode, don't run duplicate timer loop; state is synced from master operator console
+    const isSpectator = typeof window !== 'undefined' && (
+      (window.location.pathname && window.location.pathname.includes('display.html')) ||
+      (typeof document !== 'undefined' && document.querySelector('.spectator-container') !== null)
+    );
+    if (isSpectator) {
+      return;
+    }
+
     const loop = (timestamp) => {
       if (!this.lastTickTime) {
         this.lastTickTime = timestamp;
@@ -55,10 +65,27 @@ class ScoreboardTimer {
       gameClock.remainingMs = Math.max(0, gameClock.remainingMs - deltaMs);
       stateChanged = true;
 
+      // Countdown sound when time is under 10 seconds (9, 8, 7, 6, 5, 4, 3, 2, 1)
+      if (gameClock.remainingMs < 10000 && gameClock.remainingMs > 0) {
+        const currentSec = Math.floor(gameClock.remainingMs / 1000);
+        if (currentSec > 0 && this.lastGameClockSecondAnnounced !== currentSec) {
+          this.lastGameClockSecondAnnounced = currentSec;
+          if (config.soundEnabled && config.countdownBeepEnabled !== false && window.scoreboardAudio) {
+            // Rising pitch for final 3 seconds (3, 2, 1)
+            const pitch = currentSec <= 3 ? (currentSec === 1 ? 1050 : 920) : 760;
+            window.scoreboardAudio.playCountdownBeep(pitch, 0.12);
+            this.sm.broadcast('countdown', { pitch, duration: 0.12 });
+          }
+        }
+      } else {
+        this.lastGameClockSecondAnnounced = null;
+      }
+
       if (gameClock.remainingMs <= 0) {
         gameClock.running = false;
         shotClock.running = false;
         gameClock.isFinished = true;
+        this.lastGameClockSecondAnnounced = null;
 
         if (this.sm.state.teamA.score === this.sm.state.teamB.score) {
           this.sm.state.winner = 'tie';
@@ -270,6 +297,7 @@ class ScoreboardTimer {
 
   // Game clock adjustments
   adjustGameClock(deltaSeconds) {
+    this.lastGameClockSecondAnnounced = null;
     this.sm.state.gameClock.remainingMs = Math.max(
       0,
       this.sm.state.gameClock.remainingMs + (deltaSeconds * 1000)
@@ -279,6 +307,7 @@ class ScoreboardTimer {
   }
 
   setGameClockTime(minutes, seconds) {
+    this.lastGameClockSecondAnnounced = null;
     const totalMs = (minutes * 60 + seconds) * 1000;
     this.sm.state.gameClock.totalMs = totalMs;
     this.sm.state.gameClock.remainingMs = totalMs;
@@ -288,6 +317,7 @@ class ScoreboardTimer {
   }
 
   resetGameClock() {
+    this.lastGameClockSecondAnnounced = null;
     this.sm.state.gameClock.remainingMs = this.sm.state.gameClock.totalMs;
     this.sm.state.gameClock.running = false;
     this.sm.state.gameClock.isFinished = false;

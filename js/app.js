@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inputShotClockEnabled: document.getElementById('inputShotClockEnabled'),
     inputTargetScoreEnabled: document.getElementById('inputTargetScoreEnabled'),
     inputSoundEnabled: document.getElementById('inputSoundEnabled'),
+    inputCountdownBeepEnabled: document.getElementById('inputCountdownBeepEnabled'),
     btnSaveSettings: document.getElementById('btnSaveSettings'),
     btnResetMatchSettings: document.getElementById('btnResetMatchSettings'),
     btnShowShortcutsModal: document.getElementById('btnShowShortcutsModal'),
@@ -148,8 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const secs = totalSec % 60;
 
       if (ms < 10000 && ms > 0) {
+        const wholeSec = Math.floor(ms / 1000);
         const tenths = Math.floor((ms % 1000) / 100);
-        dom.gameClockDigits.textContent = `0:${secs < 10 ? '0' : ''}${secs}.${tenths}`;
+        dom.gameClockDigits.textContent = `0:${wholeSec < 10 ? '0' : ''}${wholeSec}.${tenths}`;
       } else {
         dom.gameClockDigits.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
       }
@@ -458,6 +460,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     dom.inputTargetScoreEnabled.checked = s.config.targetScoreEnabled;
     dom.inputSoundEnabled.checked = s.config.soundEnabled;
+    if (dom.inputCountdownBeepEnabled) {
+      dom.inputCountdownBeepEnabled.checked = s.config.countdownBeepEnabled !== false;
+    }
     dom.settingsModal.classList.add('active');
   });
 
@@ -491,7 +496,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gameDurationMinutes: newGameDuration,
         shotClockSeconds: newShotDuration,
         targetScoreEnabled: dom.inputTargetScoreEnabled.checked,
-        soundEnabled: dom.inputSoundEnabled.checked
+        soundEnabled: dom.inputSoundEnabled.checked,
+        countdownBeepEnabled: dom.inputCountdownBeepEnabled ? dom.inputCountdownBeepEnabled.checked : true
       }
     });
 

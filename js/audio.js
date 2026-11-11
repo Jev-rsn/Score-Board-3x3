@@ -108,10 +108,41 @@ class ScoreboardAudio {
   }
 
   /**
-   * Shot clock warning beep
+   * Countdown beep for final 10 seconds of game clock
+   * @param {number} pitch Frequency in Hz (e.g. 760Hz - 1050Hz)
+   * @param {number} duration Duration in seconds
+   */
+  playCountdownBeep(pitch = 800, duration = 0.12) {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(pitch, this.ctx.currentTime);
+
+      const vol = Math.max(0.01, this.volume * 0.85);
+      gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch (e) {
+      console.warn('Countdown beep audio error:', e);
+    }
+  }
+
+  /**
+   * Warning beep (e.g. shot clock final seconds)
    */
   playWarningBeep() {
-    // Kept subtle or disabled as all main alerts use custom sound
+    this.playCountdownBeep(680, 0.09);
   }
 }
 

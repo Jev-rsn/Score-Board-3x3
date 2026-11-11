@@ -66,6 +66,7 @@ const DEFAULT_STATE = {
     overtimeTargetPoints: 2,      // In 3x3 overtime, first to 2 pts wins
     autoBuzzerShotClock: true,
     autoBuzzerGameClock: true,
+    countdownBeepEnabled: true,
     soundEnabled: true,
     soundVolume: 0.8,
     teamFoulBonusThreshold: 7,    // 7th, 8th, 9th = 2 free throws
@@ -148,6 +149,11 @@ class ScoreboardState {
             else if (event.data.sound === 'shotClock') window.scoreboardAudio.playShotClockBuzzer();
             else if (event.data.sound === 'whistle') window.scoreboardAudio.playWhistle();
             else if (event.data.sound === 'ding') window.scoreboardAudio.playScoreDing();
+            else if (event.data.sound === 'countdown') {
+              if (this.state.config.countdownBeepEnabled !== false) {
+                window.scoreboardAudio.playCountdownBeep(event.data.pitch || 800, event.data.duration || 0.12);
+              }
+            }
           }
         }
       };
@@ -166,7 +172,7 @@ class ScoreboardState {
     });
   }
 
-  broadcast(triggerSound = null) {
+  broadcast(triggerSound = null, extraData = {}) {
     this.saveState();
     if (this.channel) {
       this.channel.postMessage({
@@ -176,7 +182,8 @@ class ScoreboardState {
       if (triggerSound) {
         this.channel.postMessage({
           type: 'TRIGGER_SOUND',
-          sound: triggerSound
+          sound: triggerSound,
+          ...extraData
         });
       }
     }

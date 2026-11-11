@@ -4,6 +4,7 @@ Platform papan skor digital basket 3x3 dengan antarmuka presisi minimalis modern
 
 Dilengkapi dengan:
 - ⏱️ **Timer Pertandingan (Kuning)** berakurasi sub-detik
+- ⏳ **Bunyi Hitung Mundur 10 Detik Terakhir (Countdown Beep)**: Bunyi hitungan detik presisi khas arena basket profesional saat waktu pertandingan memasuki 10 detik terakhir (9, 8, 7, ... 1) dengan nada yang semakin meninggi menjelang sirine buzzer akhir babak.
 - 🚨 **Shot Clock ("Shoot Lock" Merah)** 12 detik standar FIBA 3x3 (dengan tampilan persepuluh detik di bawah 5 detik, contoh: `4.7`)
 - 🛑 **Fitur Nonaktifkan / Aktifkan Shot Clock ("Shoot Lock")**: Tombol toggle instan di layar, menu cepat [⏱], pengaturan [⚙], atau tombol pintas keyboard [<kbd>C</kbd>] untuk mematikan/menghidupkan shot clock sesuai kebutuhan (misal di detik-detik akhir pertandingan atau kategori tanpa shot clock).
 - 🏆 **Logo Turnamen & Penyelenggara Rapi**: Penataan logo resmi (Universitas Negeri Malang / UM, IMONOKE, IMOCUP) dengan bingkai putih elegan yang proporsional di konsol operator dan layar penonton.
