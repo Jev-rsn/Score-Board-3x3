@@ -10,7 +10,7 @@ Dilengkapi dengan:
 - 🎯 **Tombol Cepat Skor (+2, +1, -)** dan **Fouls (+, -)** di sisi luar yang sangat ergonomis
 - ⚙️ **Ikon Pengaturan & ⏱️ Ikon Kontrol Waktu** di bagian atas
 - ⛶ **Tampilan Tunggal Penuh (Maximized)**: Layar utama responsif 100% fullscreen untuk monitor, proyektor, atau TV arena.
-- 🔊 **Audio Papan Skor Kustom**: Semua efek suara (Buzzer Shot Clock, Sirine Akhir Babak, Horn Manual, Peluit) telah diganti 100% menggunakan file audio buzzer pilihan Anda.
+- 🔊 **Audio Papan Skor Kustom**: Semua efek suara arena (Buzzer Shot Clock, Sirine Akhir Babak, Horn Manual, Peluit) telah disesuaikan menggunakan file audio buzzer pilihan Anda, sedangkan penambahan poin dan foul diset hening (tanpa suara) demi kenyamanan operasional pertandingan.
 
 ---
 

@@ -261,15 +261,11 @@ class ScoreboardState {
     team.score = Math.max(0, team.score + points);
 
     this.logEvent(`${team.name} mendapatkan +${points} poin (Skor: ${team.score})`, 'SCORE');
-    
-    if (window.scoreboardAudio && this.state.config.soundEnabled) {
-      window.scoreboardAudio.playScoreDing();
-    }
 
     // Check 3x3 Target Win condition (First to 21 points)
     this.checkWinCondition(teamKey);
 
-    this.broadcast('ding');
+    this.broadcast();
     this.notifySubscribers();
   }
 
@@ -366,11 +362,7 @@ class ScoreboardState {
       this.logEvent(`${team.name} Foul ke-${team.fouls}`, 'FOUL');
     }
 
-    if (window.scoreboardAudio && this.state.config.soundEnabled) {
-      window.scoreboardAudio.playWhistle();
-    }
-
-    this.broadcast('whistle');
+    this.broadcast();
     this.notifySubscribers();
   }
 

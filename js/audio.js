@@ -101,10 +101,10 @@ class ScoreboardAudio {
   }
 
   /**
-   * Point Scored Ding / Notification -> Replaced with user's audio
+   * Point Scored Ding / Notification -> Disabled per request (silent on score addition)
    */
   playScoreDing() {
-    this.playCustomAudio();
+    // Silent
   }
 
   /**
