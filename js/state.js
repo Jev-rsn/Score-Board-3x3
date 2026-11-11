@@ -43,7 +43,8 @@ const DEFAULT_STATE = {
     totalMs: 12 * 1000,
     remainingMs: 12 * 1000,
     running: false,
-    visible: true
+    visible: true,
+    enabled: true
   },
 
   // Timeout Countdown (30s official in 3x3)
@@ -104,7 +105,17 @@ class ScoreboardState {
           teamA: { ...DEFAULT_STATE.teamA, ...parsed.teamA },
           teamB: { ...DEFAULT_STATE.teamB, ...parsed.teamB },
           gameClock: { ...DEFAULT_STATE.gameClock, ...parsed.gameClock, running: false }, // Never resume auto-running on load
-          shotClock: { ...DEFAULT_STATE.shotClock, ...parsed.shotClock, running: false },
+          shotClock: {
+            ...DEFAULT_STATE.shotClock,
+            ...parsed.shotClock,
+            running: false,
+            enabled: parsed.shotClock && parsed.shotClock.enabled !== undefined
+              ? Boolean(parsed.shotClock.enabled)
+              : (parsed.shotClock ? parsed.shotClock.visible !== false : true),
+            visible: parsed.shotClock && parsed.shotClock.enabled !== undefined
+              ? Boolean(parsed.shotClock.enabled)
+              : (parsed.shotClock ? parsed.shotClock.visible !== false : true)
+          },
           timeout: { ...DEFAULT_STATE.timeout, ...parsed.timeout, active: false },
           config: { ...DEFAULT_STATE.config, ...parsed.config },
           matchInfo: { ...DEFAULT_STATE.matchInfo, ...parsed.matchInfo }
@@ -496,12 +507,45 @@ class ScoreboardState {
     this.notifySubscribers();
   }
 
+  // Shot Clock Enable / Disable ("Shoot Lock")
+  isShotClockActive() {
+    return this.state.shotClock.enabled !== false && this.state.shotClock.visible !== false;
+  }
+
+  toggleShotClockEnabled() {
+    const nextState = !this.isShotClockActive();
+    this.setShotClockEnabled(nextState);
+  }
+
+  setShotClockEnabled(enabled) {
+    const isActive = Boolean(enabled);
+    this.state.shotClock.enabled = isActive;
+    this.state.shotClock.visible = isActive;
+    if (!isActive) {
+      this.state.shotClock.running = false;
+      this.logEvent('Shot Clock ("Shoot Lock") dinonaktifkan', 'SHOT_CLOCK_OFF');
+    } else {
+      this.logEvent('Shot Clock ("Shoot Lock") diaktifkan', 'SHOT_CLOCK_ON');
+    }
+    this.broadcast();
+    this.notifySubscribers();
+  }
+
   updateSettings(newSettings) {
     if (newSettings.config) {
       this.state.config = { ...this.state.config, ...newSettings.config };
       if (window.scoreboardAudio) {
         window.scoreboardAudio.setEnabled(this.state.config.soundEnabled);
         window.scoreboardAudio.setVolume(this.state.config.soundVolume);
+      }
+    }
+    if (newSettings.shotClock) {
+      this.state.shotClock = { ...this.state.shotClock, ...newSettings.shotClock };
+      if (newSettings.shotClock.enabled !== undefined) {
+        this.state.shotClock.visible = Boolean(newSettings.shotClock.enabled);
+        if (!this.state.shotClock.enabled) {
+          this.state.shotClock.running = false;
+        }
       }
     }
     if (newSettings.teamA) {

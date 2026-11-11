@@ -3,7 +3,17 @@
    Exact replica of the professional 3x3 touch console layout
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Inter:wght@600;700;800;900&family=Rajdhani:wght@600;700;800&family=Teko:wght@600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Inter:wght@600;700;800;900&family=Rajdhani:wght@600;700;800&family=Teko:wght@600;700&display=swap");
+
+@font-face {
+  font-family: "Greek-Freak";
+  src:
+    url("../assets/fonts/Greek-Freak.ttf") format("truetype"),
+    url("../assets/fonts/Greek-Freak.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --bg-color: #0b0c10;
@@ -11,13 +21,17 @@
   --text-white: #ffffff;
   --border-white: rgba(255, 255, 255, 0.85);
   --border-faint: rgba(255, 255, 255, 0.25);
-  
+
   --yellow-clock: #ffd214;
   --red-shot: #ef4444;
   --green-shot: #22c55e;
-  
-  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", Helvetica, Arial, sans-serif;
-  --font-number: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", sans-serif;
+
+  --font-main:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", Helvetica,
+    Arial, sans-serif;
+  --font-number:
+    "Greek-Freak", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Inter", sans-serif;
 }
 
 * {
@@ -29,11 +43,13 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
+html,
+body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: #050608;
+  background: #000 url("../assets/background.jpg") center center / cover
+    no-repeat;
   color: var(--text-white);
   font-family: var(--font-main);
   display: flex;
@@ -45,15 +61,12 @@ html, body {
 .app-container {
   width: 100vw;
   height: 100vh;
-  max-width: 1400px;
-  max-height: 820px;
-  background-color: var(--bg-color);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 1.5vmin 3vmin 2vmin;
   position: relative;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
 }
 
 /* ================= TOP ICONS HEADER ================= */
@@ -79,7 +92,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.15s ease, color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease;
 }
 
 .icon-btn svg {
@@ -183,7 +198,9 @@ html, body {
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  transition: background 0.1s, transform 0.1s;
+  transition:
+    background 0.1s,
+    transform 0.1s;
   padding: 4px 0;
 }
 
@@ -227,25 +244,27 @@ html, body {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Large Score Card Box */
+/* Large Score Card Box (Frame Skor) */
 .score-box-card {
-  width: 100%;
-  height: 52%;
-  border: 3px solid var(--border-white);
-  border-radius: 3.2vmin;
+  height: 48%;
+  aspect-ratio: 410 / 375;
+  width: auto;
+  max-width: 100%;
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.015);
-  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.03);
-  transition: all 0.15s ease;
   position: relative;
+  background: url("../assets/frame_score.png") center center / 100% 100%
+    no-repeat;
+  padding: 0;
+  box-sizing: border-box;
+  transition: transform 0.1s ease;
 }
 
 .score-box-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: #ffffff;
+  transform: scale(1.02);
 }
 
 .score-box-card:active {
@@ -254,67 +273,128 @@ html, body {
 
 .score-number-text {
   font-family: var(--font-number);
-  font-size: 21vmin;
+  font-size: 15vmin;
   font-weight: 800;
   line-height: 1;
   color: var(--text-white);
   letter-spacing: -1px;
+  pointer-events: none;
 }
 
 /* Fouls Label */
 .fouls-section-label {
-  font-size: 2.2vmin;
+  font-size: 2vmin;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--text-white);
-  margin-top: 1.5vmin;
-  margin-bottom: 0.5vmin;
+  margin: 0.5vmin 0;
 }
 
-/* Small Fouls Card Box */
+/* Small Fouls Card Box (Frame Foul) */
 .fouls-box-card {
-  width: 58%;
-  height: 28%;
-  border: 3px solid var(--border-white);
-  border-radius: 2.2vmin;
+  height: 24%;
+  aspect-ratio: 245 / 205;
+  width: auto;
+  max-width: 100%;
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.015);
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.03);
-  transition: all 0.15s ease;
+  position: relative;
+  background: url("../assets/frame_foul.png") center center / 100% 100%
+    no-repeat;
+  padding: 0;
+  box-sizing: border-box;
+  transition: transform 0.1s ease;
 }
 
 .fouls-box-card:hover {
-  background: rgba(255, 255, 255, 0.05);
+  transform: scale(1.03);
 }
 
 .fouls-box-card:active {
   transform: scale(0.96);
 }
 
-.fouls-box-card.penalty {
-  border-color: #f59e0b;
+.fouls-box-card.penalty .fouls-number-text {
+  color: #f59e0b;
 }
 
-.fouls-box-card.double-penalty {
-  border-color: var(--red-shot);
+.fouls-box-card.double-penalty .fouls-number-text {
+  color: var(--red-shot);
   animation: pulsePenalty 1s infinite alternate;
 }
 
 @keyframes pulsePenalty {
-  0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
-  100% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.8); }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }
 
 .fouls-number-text {
   font-family: var(--font-number);
-  font-size: 11vmin;
+  font-size: 8vmin;
   font-weight: 800;
   line-height: 1;
   color: var(--text-white);
+  pointer-events: none;
+}
+
+/* ================= TOURNAMENT LOGOS ================= */
+.card-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6vmin;
+  margin: 0.6vmin 0;
+  width: 100%;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 1.2vmin;
+  padding: 0.5vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.45),
+    0 0 8px rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  width: 8vmin;
+  height: 7vmin;
+  min-width: 75px;
+  min-height: 75px;
+  max-width: 72px;
+  max-height: 72px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.card:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.6),
+    0 0 12px rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 0.6vmin;
 }
 
 /* ================= CENTER CLOCKS ================= */
@@ -331,7 +411,9 @@ html, body {
   cursor: pointer;
   padding: 1vmin 2vmin;
   border-radius: 1.5vmin;
-  transition: transform 0.1s, background 0.15s;
+  transition:
+    transform 0.1s,
+    background 0.15s;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -354,12 +436,23 @@ html, body {
   letter-spacing: 1px;
 }
 
-/* Shot Clock (Red) */
+/* Shot Clock ("Shoot Lock" Red) */
+.shot-clock-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5vmin;
+}
+
 .clock-unit-shot {
   cursor: pointer;
-  padding: 1vmin 2vmin;
+  padding: 0.8vmin 2vmin;
   border-radius: 1.5vmin;
-  transition: transform 0.1s, background 0.15s;
+  transition:
+    transform 0.1s,
+    background 0.15s,
+    opacity 0.2s;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -373,6 +466,14 @@ html, body {
   transform: scale(0.96);
 }
 
+.clock-unit-shot.disabled {
+  opacity: 0.45;
+}
+
+.clock-unit-shot.disabled:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .shot-clock-val {
   font-family: var(--font-number);
   font-size: 18vmin;
@@ -380,6 +481,13 @@ html, body {
   color: var(--red-shot);
   line-height: 1;
   letter-spacing: -1px;
+  transition: color 0.2s;
+}
+
+.shot-clock-val.disabled {
+  color: #64748b;
+  text-shadow: none;
+  animation: none !important;
 }
 
 .shot-clock-val.expired {
@@ -387,8 +495,70 @@ html, body {
 }
 
 @keyframes shotFlash {
-  0% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0.3; transform: scale(1.04); }
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(1.04);
+  }
+}
+
+/* Shot Clock Toggle Switch Pill */
+.shot-toggle-btn {
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+  font-family: var(--font-main);
+  font-size: 1.3vmin;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.shot-toggle-btn:hover {
+  background: rgba(34, 197, 94, 0.25);
+  border-color: #22c55e;
+  transform: scale(1.04);
+}
+
+.shot-toggle-btn:active {
+  transform: scale(0.96);
+}
+
+.shot-toggle-btn.disabled {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.shot-toggle-btn.disabled:hover {
+  background: rgba(239, 68, 68, 0.24);
+  border-color: #ef4444;
+}
+
+.shot-toggle-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.shot-toggle-btn.disabled .shot-toggle-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
 }
 
 /* ================= BOTTOM HOME BAR INDICATOR ================= */

@@ -8,14 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const timer = window.scoreboardTimer;
   const audio = window.scoreboardAudio;
 
-  let spectatorWindow = null;
-
   // DOM Elements Cache
   const dom = {
     // Top Icons & Tools
     btnSettingsIcon: document.getElementById('btnSettingsIcon'),
     btnTimerIcon: document.getElementById('btnTimerIcon'),
-    btnPopout: document.getElementById('btnPopout'),
     btnHornManual: document.getElementById('btnHornManual'),
     btnUndoMini: document.getElementById('btnUndoMini'),
     btnFullscreenMini: document.getElementById('btnFullscreenMini'),
@@ -49,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     gameClockDigits: document.getElementById('gameClockDigits'),
     shotClockBox: document.getElementById('shotClockBox'),
     shotClockDigits: document.getElementById('shotClockDigits'),
+    btnToggleShotClock: document.getElementById('btnToggleShotClock'),
+    shotToggleText: document.getElementById('shotToggleText'),
 
     // Modals
     settingsModal: document.getElementById('settingsModal'),
@@ -61,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inputTeamBName: document.getElementById('inputTeamBName'),
     inputGameDuration: document.getElementById('inputGameDuration'),
     inputShotClockDuration: document.getElementById('inputShotClockDuration'),
+    inputShotClockEnabled: document.getElementById('inputShotClockEnabled'),
     inputTargetScoreEnabled: document.getElementById('inputTargetScoreEnabled'),
     inputSoundEnabled: document.getElementById('inputSoundEnabled'),
     btnSaveSettings: document.getElementById('btnSaveSettings'),
@@ -161,10 +161,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Shot Clock ("Shoot Lock")
-    if (!state.shotClock.visible) {
-      dom.shotClockDigits.textContent = '--';
-      dom.shotClockDigits.className = 'shot-clock-val';
+    const isShotClockActive = state.shotClock.enabled !== false && state.shotClock.visible !== false;
+
+    if (!isShotClockActive) {
+      dom.shotClockDigits.textContent = 'OFF';
+      dom.shotClockDigits.className = 'shot-clock-val disabled';
+      if (dom.shotClockBox) dom.shotClockBox.classList.add('disabled');
+      if (dom.btnToggleShotClock) {
+        dom.btnToggleShotClock.className = 'shot-toggle-btn disabled';
+        if (dom.shotToggleText) dom.shotToggleText.textContent = 'SHOT CLOCK: NONAKTIF';
+        dom.btnToggleShotClock.title = 'Shot clock sedang nonaktif. Klik untuk aktifkan [C]';
+      }
+      if (dom.btnToggleShotBlankModal) {
+        dom.btnToggleShotBlankModal.textContent = '🟢 Aktifkan Shot Clock [C]';
+      }
     } else {
+      if (dom.shotClockBox) dom.shotClockBox.classList.remove('disabled');
+      if (dom.btnToggleShotClock) {
+        dom.btnToggleShotClock.className = 'shot-toggle-btn active';
+        if (dom.shotToggleText) dom.shotToggleText.textContent = 'SHOT CLOCK: AKTIF';
+        dom.btnToggleShotClock.title = 'Shot clock sedang aktif. Klik untuk matikan [C]';
+      }
+      if (dom.btnToggleShotBlankModal) {
+        dom.btnToggleShotBlankModal.textContent = '🛑 Nonaktifkan Shot Clock [C]';
+      }
+
       const shotMs = state.shotClock.remainingMs;
       const shotSec = Math.ceil(shotMs / 1000);
 
@@ -333,11 +354,27 @@ document.addEventListener('DOMContentLoaded', () => {
     timer.toggleMasterClock();
   });
 
-  // Tap Shot Clock -> Reset to 12s (Official 3x3)
+  // Tap Shot Clock -> Reset to 12s (Official 3x3 rule) / Re-enable if disabled
   dom.shotClockBox.addEventListener('click', () => {
     audio.init();
-    timer.resetShotClock(stateMgr.state.gameClock.running, 12);
+    const isShotActive = stateMgr.state.shotClock.enabled !== false && stateMgr.state.shotClock.visible !== false;
+    if (!isShotActive) {
+      timer.resetShotClock(stateMgr.state.gameClock.running, 12, true);
+      showToast('Shot Clock diaktifkan kembali (12 Detik)');
+    } else {
+      timer.resetShotClock(stateMgr.state.gameClock.running, 12);
+    }
   });
+
+  // Tap Toggle Shot Clock Button (Quick Enable/Disable Pill)
+  if (dom.btnToggleShotClock) {
+    dom.btnToggleShotClock.addEventListener('click', () => {
+      audio.init();
+      timer.toggleShotClockEnabled();
+      const nextActive = stateMgr.state.shotClock.enabled !== false && stateMgr.state.shotClock.visible !== false;
+      showToast(nextActive ? 'Shot Clock Diaktifkan' : 'Shot Clock Dinonaktifkan');
+    });
+  }
 
   // Tap Score Boxes directly -> +1 point
   dom.teamAScoreBox.addEventListener('click', () => {
@@ -409,15 +446,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Pop-out Spectator Display
-  dom.btnPopout.addEventListener('click', () => {
-    if (!spectatorWindow || spectatorWindow.closed) {
-      spectatorWindow = window.open('display.html', 'FIBA3x3Display', 'width=1280,height=720,menubar=no,toolbar=no,location=no,status=no');
-    } else {
-      spectatorWindow.focus();
-    }
-  });
-
   // Open Settings Modal (⚙️)
   dom.btnSettingsIcon.addEventListener('click', () => {
     const s = stateMgr.state;
@@ -425,6 +453,9 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.inputTeamBName.value = s.teamB.name || 'TEAM2';
     dom.inputGameDuration.value = s.config.gameDurationMinutes;
     dom.inputShotClockDuration.value = s.config.shotClockSeconds;
+    if (dom.inputShotClockEnabled) {
+      dom.inputShotClockEnabled.checked = s.shotClock.enabled !== false && s.shotClock.visible !== false;
+    }
     dom.inputTargetScoreEnabled.checked = s.config.targetScoreEnabled;
     dom.inputSoundEnabled.checked = s.config.soundEnabled;
     dom.settingsModal.classList.add('active');
@@ -447,10 +478,15 @@ document.addEventListener('DOMContentLoaded', () => {
   dom.btnSaveSettings.addEventListener('click', () => {
     const newGameDuration = parseInt(dom.inputGameDuration.value, 10) || 10;
     const newShotDuration = parseInt(dom.inputShotClockDuration.value, 10) || 12;
+    const isShotClockActive = dom.inputShotClockEnabled ? dom.inputShotClockEnabled.checked : true;
 
     stateMgr.updateSettings({
       teamA: { name: dom.inputTeamAName.value.trim().toUpperCase() || 'TEAM1' },
       teamB: { name: dom.inputTeamBName.value.trim().toUpperCase() || 'TEAM2' },
+      shotClock: {
+        enabled: isShotClockActive,
+        visible: isShotClockActive
+      },
       config: {
         gameDurationMinutes: newGameDuration,
         shotClockSeconds: newShotDuration,
@@ -508,7 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   dom.btnToggleShotBlankModal.addEventListener('click', () => {
-    timer.toggleShotClockVisibility();
+    timer.toggleShotClockEnabled();
+    const isNowActive = stateMgr.state.shotClock.enabled !== false && stateMgr.state.shotClock.visible !== false;
+    showToast(isNowActive ? 'Shot Clock Diaktifkan' : 'Shot Clock Dinonaktifkan');
   });
 
   // Winner Modal buttons
@@ -633,6 +671,14 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'KeyD':
         e.preventDefault();
         timer.resetShotClock(stateMgr.state.gameClock.running, 14);
+        break;
+
+      // Toggle Shot Clock Enabled / Disabled ("Shoot Lock")
+      case 'KeyC':
+        e.preventDefault();
+        timer.toggleShotClockEnabled();
+        const isNowActive = stateMgr.state.shotClock.enabled !== false && stateMgr.state.shotClock.visible !== false;
+        showToast(isNowActive ? 'Shot Clock Diaktifkan' : 'Shot Clock Dinonaktifkan');
         break;
 
       // Team 1 Controls

@@ -79,8 +79,9 @@ class ScoreboardTimer {
     }
 
     // 3. SHOT CLOCK ("SHOOT LOCK")
-    // Runs when shotClock.running is true (typically synchronised with gameClock, but can run during Overtime!)
-    if (shotClock.running && shotClock.visible) {
+    // Runs when shotClock.running is true and shotClock is active/enabled (can run during Overtime!)
+    const isShotClockActive = shotClock.enabled !== false && shotClock.visible !== false;
+    if (shotClock.running && isShotClockActive) {
       shotClock.remainingMs = Math.max(0, shotClock.remainingMs - deltaMs);
       stateChanged = true;
 
@@ -127,13 +128,21 @@ class ScoreboardTimer {
       return;
     }
 
-    // Di babak Overtime, waktu utama adalah OT sehingga master clock mengendalikan Shot Clock
+    const isShotClockActive = this.sm.isShotClockActive
+      ? this.sm.isShotClockActive()
+      : (this.sm.state.shotClock.enabled !== false && this.sm.state.shotClock.visible !== false);
+
+    // Di babak Overtime, waktu utama adalah OT sehingga master clock mengendalikan Shot Clock (jika aktif)
     if (this.sm.state.gameClock.isOvertime) {
-      const shouldRun = !this.sm.state.shotClock.running;
-      this.sm.state.shotClock.running = shouldRun;
-      this.sm.state.gameClock.running = shouldRun;
-      if (shouldRun && this.sm.state.shotClock.remainingMs <= 0) {
-        this.resetShotClock(true);
+      if (isShotClockActive) {
+        const shouldRun = !this.sm.state.shotClock.running;
+        this.sm.state.shotClock.running = shouldRun;
+        this.sm.state.gameClock.running = shouldRun;
+        if (shouldRun && this.sm.state.shotClock.remainingMs <= 0) {
+          this.resetShotClock(true);
+        }
+      } else {
+        this.sm.state.gameClock.running = !this.sm.state.gameClock.running;
       }
       this.sm.broadcast();
       this.sm.notifySubscribers();
@@ -143,12 +152,14 @@ class ScoreboardTimer {
     const shouldRun = !this.sm.state.gameClock.running;
     this.sm.state.gameClock.running = shouldRun;
 
-    // Shot clock follows game clock if visible
-    if (this.sm.state.shotClock.visible) {
+    // Shot clock follows game clock ONLY IF active
+    if (isShotClockActive) {
       if (this.sm.state.shotClock.remainingMs <= 0) {
         this.resetShotClock(false);
       }
       this.sm.state.shotClock.running = shouldRun;
+    } else {
+      this.sm.state.shotClock.running = false;
     }
 
     this.sm.broadcast();
@@ -157,8 +168,14 @@ class ScoreboardTimer {
 
   startMasterClock() {
     this.sm.state.gameClock.running = true;
-    if (this.sm.state.shotClock.visible && this.sm.state.shotClock.remainingMs > 0) {
+    const isShotClockActive = this.sm.isShotClockActive
+      ? this.sm.isShotClockActive()
+      : (this.sm.state.shotClock.enabled !== false && this.sm.state.shotClock.visible !== false);
+
+    if (isShotClockActive && this.sm.state.shotClock.remainingMs > 0) {
       this.sm.state.shotClock.running = true;
+    } else {
+      this.sm.state.shotClock.running = false;
     }
     this.sm.broadcast();
     this.sm.notifySubscribers();
@@ -173,6 +190,15 @@ class ScoreboardTimer {
 
   // Shot clock standalone controls
   toggleShotClock() {
+    const isShotClockActive = this.sm.isShotClockActive
+      ? this.sm.isShotClockActive()
+      : (this.sm.state.shotClock.enabled !== false && this.sm.state.shotClock.visible !== false);
+
+    if (!isShotClockActive) {
+      this.toggleShotClockEnabled();
+      return;
+    }
+
     this.sm.state.shotClock.running = !this.sm.state.shotClock.running;
     this.sm.broadcast();
     this.sm.notifySubscribers();
@@ -182,16 +208,28 @@ class ScoreboardTimer {
    * Reset Shot Clock to 12s (Official 3x3 rule) or custom seconds
    * @param {boolean} autoStart Whether to start ticking immediately
    * @param {number|null} seconds Defaults to config shotClockSeconds (12)
+   * @param {boolean} forceEnable If true, re-enables shot clock if it was disabled
    */
-  resetShotClock(autoStart = false, seconds = null) {
+  resetShotClock(autoStart = false, seconds = null, forceEnable = false) {
     const sec = seconds !== null ? seconds : (this.sm.state.config.shotClockSeconds || 12);
     this.sm.state.shotClock.totalMs = sec * 1000;
     this.sm.state.shotClock.remainingMs = sec * 1000;
-    this.sm.state.shotClock.visible = true;
+
+    if (forceEnable) {
+      this.sm.state.shotClock.enabled = true;
+      this.sm.state.shotClock.visible = true;
+    }
+
+    const isShotClockActive = this.sm.isShotClockActive
+      ? this.sm.isShotClockActive()
+      : (this.sm.state.shotClock.enabled !== false && this.sm.state.shotClock.visible !== false);
+
     this.lastShotClockSecondAnnounced = null;
 
-    if (autoStart) {
+    if (autoStart && isShotClockActive) {
       this.sm.state.shotClock.running = true;
+    } else if (!isShotClockActive) {
+      this.sm.state.shotClock.running = false;
     }
 
     this.sm.broadcast();
@@ -204,10 +242,27 @@ class ScoreboardTimer {
     this.sm.notifySubscribers();
   }
 
+  toggleShotClockEnabled() {
+    if (this.sm.toggleShotClockEnabled) {
+      this.sm.toggleShotClockEnabled();
+    } else {
+      this.toggleShotClockVisibility();
+    }
+  }
+
   toggleShotClockVisibility() {
-    this.sm.state.shotClock.visible = !this.sm.state.shotClock.visible;
-    if (!this.sm.state.shotClock.visible) {
+    const isCurrentlyActive = this.sm.isShotClockActive
+      ? this.sm.isShotClockActive()
+      : (this.sm.state.shotClock.enabled !== false && this.sm.state.shotClock.visible !== false);
+    const nextState = !isCurrentlyActive;
+
+    this.sm.state.shotClock.enabled = nextState;
+    this.sm.state.shotClock.visible = nextState;
+    if (!nextState) {
       this.sm.state.shotClock.running = false;
+      this.sm.logEvent('Shot Clock dinonaktifkan', 'SHOT_CLOCK_OFF');
+    } else {
+      this.sm.logEvent('Shot Clock diaktifkan', 'SHOT_CLOCK_ON');
     }
     this.sm.broadcast();
     this.sm.notifySubscribers();
