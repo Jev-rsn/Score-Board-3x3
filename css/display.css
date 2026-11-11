@@ -598,3 +598,333 @@ html, body {
   padding: 2vmin 6vmin;
   border-radius: 2vmin;
 }
+
+/* ==========================================================================
+   MOBILE & RESPONSIVE LAYOUT OPTIMIZATIONS (SPECTATOR / DISPLAY)
+   ========================================================================== */
+
+/* --- MOBILE PORTRAIT (<768px portrait or <680px) --- */
+@media (max-width: 768px) and (orientation: portrait), (max-width: 680px) {
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .spectator-container {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: max(8px, env(safe-area-inset-top, 8px))
+      max(10px, env(safe-area-inset-right, 10px))
+      max(14px, env(safe-area-inset-bottom, 14px))
+      max(10px, env(safe-area-inset-left, 10px));
+    gap: 10px;
+  }
+
+  .spectator-header {
+    padding: 4px 6px 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .fiba-brand {
+    gap: 6px;
+  }
+
+  .brand-badge {
+    font-size: 0.95rem;
+    padding: 2px 8px;
+  }
+
+  .tournament-label {
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+  }
+
+  .court-label {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+  }
+
+  /* ARENA LAYOUT IN PORTRAIT */
+  .spectator-arena {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "clocks clocks"
+      "teamA teamB";
+    gap: 10px;
+    padding-top: 0;
+    height: auto;
+  }
+
+  .center-clocks {
+    grid-area: clocks;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "logos logos"
+      "game shot";
+    gap: 8px 10px;
+    background: rgba(11, 16, 29, 0.7);
+    border: 2px solid #1e293b;
+    border-radius: 14px;
+    padding: 10px 8px;
+  }
+
+  .card-container.spectator-logos {
+    grid-area: logos;
+    justify-content: center;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .card-container.spectator-logos .card {
+    width: 44px;
+    height: 44px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 48px;
+    max-height: 48px;
+    border-radius: 8px;
+    padding: 3px;
+  }
+
+  .game-clock-panel {
+    grid-area: game;
+    padding: 8px 4px;
+    border-radius: 12px;
+  }
+
+  .period-title {
+    font-size: 0.7rem;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+  }
+
+  .game-digits {
+    font-size: clamp(30px, 8vw, 42px);
+  }
+
+  .shot-clock-panel {
+    grid-area: shot;
+    padding: 8px 4px;
+    border-radius: 12px;
+  }
+
+  .shot-title {
+    font-size: 0.7rem;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+  }
+
+  .shot-digits {
+    font-size: clamp(32px, 8.5vw, 44px);
+  }
+
+  /* TEAMS IN PORTRAIT */
+  .team-card.team-a {
+    grid-area: teamA;
+  }
+
+  .team-card.team-b {
+    grid-area: teamB;
+  }
+
+  .team-card {
+    padding: 10px 8px;
+    border-radius: 14px;
+    gap: 8px;
+  }
+
+  .team-name {
+    font-size: clamp(14px, 4vw, 18px);
+    max-width: 110px;
+  }
+
+  .possession-light {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
+
+  .score-box {
+    height: auto;
+    min-height: 85px;
+    max-width: 120px;
+    margin: 4px auto;
+  }
+
+  .score-digits {
+    font-size: clamp(40px, 11vw, 56px);
+  }
+
+  .team-bottom-stats {
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px 8px;
+    align-items: stretch;
+  }
+
+  .stat-item {
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  .foul-number {
+    font-size: 1.1rem;
+  }
+
+  .foul-pills {
+    gap: 3px;
+  }
+
+  .foul-pill {
+    width: 7px;
+    height: 7px;
+  }
+
+  .penalty-tag {
+    font-size: 0.65rem;
+    padding: 2px 5px;
+  }
+
+  .timeout-light {
+    width: 14px;
+    height: 8px;
+  }
+}
+
+/* --- MOBILE LANDSCAPE (Short Screen <=550px) --- */
+@media (orientation: landscape) and (max-height: 550px) {
+  .spectator-container {
+    padding: max(4px, env(safe-area-inset-top, 4px))
+      max(8px, env(safe-area-inset-right, 8px))
+      max(4px, env(safe-area-inset-bottom, 4px))
+      max(8px, env(safe-area-inset-left, 8px));
+    gap: 4px;
+  }
+
+  .spectator-header {
+    padding: 2px 6px 4px;
+  }
+
+  .tournament-label {
+    font-size: 0.85rem;
+  }
+
+  .court-label {
+    font-size: 0.75rem;
+  }
+
+  .spectator-arena {
+    grid-template-columns: 1fr 28vmin 1fr;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  .card-container.spectator-logos {
+    gap: 6px;
+    padding: 2px 0;
+  }
+
+  .card-container.spectator-logos .card {
+    width: 32px;
+    height: 32px;
+    min-width: 26px;
+    min-height: 26px;
+    max-width: 34px;
+    max-height: 34px;
+    padding: 2px;
+  }
+
+  .game-clock-panel,
+  .shot-clock-panel {
+    padding: 4px;
+    border-radius: 10px;
+  }
+
+  .period-title,
+  .shot-title {
+    font-size: 0.65rem;
+    margin-bottom: 1px;
+  }
+
+  .game-digits {
+    font-size: clamp(26px, 8vmin, 38px);
+  }
+
+  .shot-digits {
+    font-size: clamp(30px, 10vmin, 44px);
+  }
+
+  .team-card {
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .team-name {
+    font-size: clamp(14px, 3.5vmin, 20px);
+  }
+
+  .score-box {
+    height: 42vmin;
+    max-height: 110px;
+    margin: 2px auto;
+  }
+
+  .score-digits {
+    font-size: clamp(34px, 11vmin, 50px);
+  }
+
+  .team-bottom-stats {
+    padding: 4px 8px;
+  }
+
+  .foul-number {
+    font-size: 1.1rem;
+  }
+
+  .foul-pill {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* --- OVERLAYS ON MOBILE --- */
+@media (max-width: 680px) {
+  .timeout-msg {
+    font-size: 1.4rem;
+  }
+
+  .timeout-countdown {
+    font-size: 3rem;
+  }
+
+  .win-trophy {
+    font-size: 4rem;
+  }
+
+  .win-team-name {
+    font-size: clamp(26px, 8vw, 42px);
+  }
+
+  .win-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2vmin;
+  }
+
+  .win-final-board {
+    font-size: clamp(30px, 9vw, 46px);
+    padding: 10px 24px;
+    gap: 16px;
+  }
+}
+

@@ -12,6 +12,7 @@ Dilengkapi dengan:
 - ⚙️ **Ikon Pengaturan & ⏱️ Ikon Kontrol Waktu** di bagian atas
 - ⛶ **Tampilan Tunggal Penuh (Maximized)**: Layar utama responsif 100% fullscreen untuk monitor, proyektor, atau TV arena.
 - 🔊 **Audio Papan Skor Kustom**: Semua efek suara arena (Buzzer Shot Clock, Sirine Akhir Babak, Horn Manual, Peluit) telah disesuaikan menggunakan file audio buzzer pilihan Anda, sedangkan penambahan poin dan foul diset hening (tanpa suara) demi kenyamanan operasional pertandingan.
+- 📱 **Tampilan Responsif Mobile & Tablet**: Tata letak khusus perangkat seluler (smartphone mode vertikal/portrait maupun horizontal/landscape). Jam dan shot clock berada di atas, kedua tim berdampingan dengan tombol sentuh jempol kiri & kanan yang ergonomis, serta modal dialog yang fleksibel dan ramah sentuhan.
 
 ---
 
